@@ -97,6 +97,37 @@ async function run() {
         );
         res.send(result);
       });
+    // delete feedback using id 
+    app.delete("/feedback/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await feedbackCollection.deleteOne(query);
+      res.json(result);
+    });
+    // delete feedback using id 
+    app.delete("/appoinment/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await appoinmentCollection.deleteOne(query);
+      res.json(result);
+    });
+// update feedback Status
+      app.put("/feedback", async (req, res) => {
+        const feedback = req.body;
+        const id = feedback._id;
+        const filter = { _id: ObjectId(id) };
+        const options = { upsert: true };
+        delete feedback._id;
+        const updateDoc = {
+          $set: feedback,
+        };
+        const result = await feedbackCollection.updateOne(
+          filter,
+          updateDoc,
+          options
+        );
+        res.send(result);
+      });
     
     
     //    get all data from serviceCollection database
@@ -136,10 +167,10 @@ async function run() {
       }
     });
     // get all review
-    // app.get("/feedback", async (req, res) => {
-    //   const result = await feedbackCollection.find({}).toArray();
-    //   res.json(result);
-    // });
+    app.get("/feedback", async (req, res) => {
+      const result = await feedbackCollection.find({}).toArray();
+      res.json(result);
+    });
 
     //
     //
