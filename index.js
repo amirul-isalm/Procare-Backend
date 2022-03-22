@@ -43,6 +43,20 @@ async function run() {
       const result = await appoinmentCollection.insertOne(appoinment);
       res.json(result);
     });
+    // get your appoinment
+    app.get("/booking-appoinment", async (req, res) => {
+      const email = req.query.email;
+      const coursor = { PataintEmail: email };
+
+      const result = await appoinmentCollection.find(coursor).toArray();
+      res.json(result);
+    });
+    // get all appoinment
+    app.get("/all-appoinment", async (req, res) => {
+      const result = await appoinmentCollection.find({}).toArray();
+      res.json(result);
+    });
+
     ///post feedback
     app.post("/addReview", async (req, res) => {
       const feedback = req.body;
@@ -66,7 +80,25 @@ async function run() {
       const result = await serviceCollection.insertOne(service);
       res.json(result);
     });
-
+// update Appoinment Status
+      app.put("/appoinment", async (req, res) => {
+        const appoinment = req.body;
+        const id = appoinment._id;
+        const filter = { _id: ObjectId(id) };
+        const options = { upsert: true };
+        delete appoinment._id;
+        const updateDoc = {
+          $set: appoinment,
+        };
+        const result = await appoinmentCollection.updateOne(
+          filter,
+          updateDoc,
+          options
+        );
+        res.send(result);
+      });
+    
+    
     //    get all data from serviceCollection database
     app.get("/all-service", async (req, res) => {
       const result = await serviceCollection.find({}).toArray();
